@@ -51,9 +51,9 @@ class ControllerBase
   def render(template_name)
     controller_name = self.class.name.underscore
     path = "views/#{controller_name}/#{template_name}.html.erb"
-    result = create_template_with_binding(path)
+    binded_template = create_binded_template(path)
 
-    render_content(result, 'text/html')
+    render_content(binded_template, 'text/html')
   end
 
   # method exposing a `Session` object
@@ -69,7 +69,7 @@ class ControllerBase
 
   private
 
-  def create_template_with_binding(path)
+  def create_binded_template(path)
     template = ERB.new(File.read(path))
     template.result(binding)
   end
