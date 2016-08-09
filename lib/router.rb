@@ -26,9 +26,8 @@ class Route
   def parse_route_params(req)
     route_params = {}
     match_data = @pattern.match(req.path)
+    match_data.names.each { |key| route_params[key] = match_data[key] }
 
-    match_data.names.each{|key| route_params[key] = match_data[key]}
-    
     route_params
   end
 end
@@ -68,6 +67,7 @@ class Router
   # either throw 404 or call run on a matched route
   def run(req, res)
     route = match(req)
+
     if route
       route.run(req, res)
     else

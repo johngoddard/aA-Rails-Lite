@@ -52,11 +52,7 @@ class ControllerBase
   def render(template_name)
     controller_name = self.class.name.underscore
     path = "views/#{controller_name}/#{template_name}.html.erb"
-
-    template_file = File.read(path)
-    template = ERB.new(template_file)
-
-    result = template.result(binding)
+    result = create_template_with_binding(path)
 
     render_content(result, 'text/html')
   end
@@ -70,5 +66,12 @@ class ControllerBase
   def invoke_action(name)
     self.send(name.to_sym)
     render(name.to_sym) unless @already_built_response
+  end
+
+  private
+
+  def create_template_with_binding(path)
+    template = ERB.new(File.read(path))
+    template.result(binding)
   end
 end
