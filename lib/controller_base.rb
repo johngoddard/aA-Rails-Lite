@@ -9,10 +9,10 @@ class ControllerBase
   attr_reader :req, :res, :params
 
   # Setup the controller
-  def initialize(req, res)
+  def initialize(req, res, route_params = {})
     @res = res
     @req = req
-    @params = req.params
+    @params = req.params.merge(route_params)
   end
 
   # Helper method to alias @already_built_response
@@ -26,6 +26,7 @@ class ControllerBase
       @res.set_header('Location', url)
       @res.status = 302
       @already_built_response = true
+      session.store_session(@res)
     else
       raise "Cannot render or redirect twice"
     end
@@ -39,6 +40,7 @@ class ControllerBase
       @res['Content-Type'] = content_type
       @res.write(content)
       @already_built_response = true
+      session.store_session(@res)
     else
       raise "Cannot render or redirect twice"
     end
@@ -52,7 +54,6 @@ class ControllerBase
     path = "views/#{controller_name}/#{template_name}.html.erb"
 
     template_file = File.read(path)
-    debugger
     template = ERB.new(template_file)
 
     result = template.result(binding)
@@ -62,9 +63,12 @@ class ControllerBase
 
   # method exposing a `Session` object
   def session
+    @session ||= Session.new(@req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(name)
+    self.send(name.to_sym)
+    render(name.to_sym) unless @already_built_response
   end
 end
