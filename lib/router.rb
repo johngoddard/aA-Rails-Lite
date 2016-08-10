@@ -1,5 +1,6 @@
 class Route
   attr_reader :pattern, :http_method, :controller_class, :action_name
+  AUTH_TOKEN = SecureRandom.urlsafe_base64(16)
 
   def initialize(pattern, http_method, controller_class, action_name)
     @pattern = pattern

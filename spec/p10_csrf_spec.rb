@@ -19,7 +19,6 @@ describe ControllerBase do
       token = controller_base.form_authenticity_token
       cookie_str = res.headers['Set-Cookie']
       cookie = Rack::Utils.parse_query(cookie_str)
-
       expect(cookie['authenticity_token']).to eq(token)
     end
 
