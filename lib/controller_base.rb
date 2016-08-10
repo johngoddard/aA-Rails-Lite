@@ -85,6 +85,7 @@ class ControllerBase
     cookie[:value] = @params["authenticity_token"]
     cookie[:path] = '/'
     @res.set_cookie('authenticity_token', cookie)
+    
     @params["authenticity_token"]
   end
 
