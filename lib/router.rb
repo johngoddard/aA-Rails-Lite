@@ -60,7 +60,7 @@ class Router
 
   # should return the route that matches this request
   def match(req)
-    @routes.each{|route| return route if route.matches?(req)}
+    @routes.each { |route| return route if route.matches?(req) }
     nil
   end
 

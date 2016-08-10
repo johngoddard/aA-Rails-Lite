@@ -2,6 +2,7 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'erb'
 require_relative './session'
+require_relative './flash'
 require 'byebug'
 require 'active_support/inflector'
 
@@ -27,6 +28,7 @@ class ControllerBase
       @res.status = 302
       @already_built_response = true
       session.store_session(@res)
+      flash.store_flash(@res)
     else
       raise "Cannot render or redirect twice"
     end
@@ -41,6 +43,7 @@ class ControllerBase
       @res.write(content)
       @already_built_response = true
       session.store_session(@res)
+      flash.store_flash(@res)
     else
       raise "Cannot render or redirect twice"
     end
@@ -49,6 +52,7 @@ class ControllerBase
   # use ERB and binding to evaluate templates
   # pass the rendered html to render_content
   def render(template_name)
+    debugger if self.class.name.to_s == "Cats2Controller"
     controller_name = self.class.name.underscore
     path = "views/#{controller_name}/#{template_name}.html.erb"
     binded_template = create_binded_template(path)
@@ -59,6 +63,10 @@ class ControllerBase
   # method exposing a `Session` object
   def session
     @session ||= Session.new(@req)
+  end
+
+  def flash
+    @flash ||= Flash.new(@req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)

@@ -12,8 +12,6 @@ class Session
     @cookie_content[key]
   end
 
-
-
   def []=(key, val)
     @cookie_content[key] = val
   end
