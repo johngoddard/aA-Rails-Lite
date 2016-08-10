@@ -3,6 +3,12 @@
 
 <h4>Error information</h4>
 <ul>
+  <li>Error Type:
+    <%= @error.class.name %>
+    <br>
+    <br>
+  </li>
+
   <li>Exception Message:
     <%= @error.message %>
     <br>
@@ -23,7 +29,7 @@
 
     <% @code_preview[:code].each do |line| %>
       <% if curr_line == error_line - 1%>
-        <%= "* #{curr_line}: #{line} <=== <strong>Error Line</strong>".html_safe %> <br>
+        <%= "* #{curr_line}: #{line} <=== Error Line" %> <br>
       <% else %>
         <%= "* #{curr_line}: #{line}" %> <br>
       <% end %>

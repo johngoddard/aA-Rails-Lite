@@ -1,8 +1,9 @@
 require 'erb'
-require 'byebug'
 
 class ShowExceptions
   CODE_PREVIEW_SIZE = 10
+
+  attr_reader :app
 
   def initialize(app)
     @app = app
@@ -11,15 +12,14 @@ class ShowExceptions
   end
 
   def call(env)
-    res = Rack::Response.new
-
     begin
-      @app.call(env)
+      app.call(env)
     rescue Exception => @error
+      res = Rack::Response.new
+      res.status = 500
       res['Content-Type'] = 'text/html'
       res.write(render_exception(@error))
       res.finish
-      # render_exception(e)
     end
   end
 
@@ -48,9 +48,8 @@ class ShowExceptions
   def find_file(e)
     top_line = e.backtrace.first
     match_data = /(?<file_path>(.+\/)+.+\.rb):(?<line_num>\d+)/.match(top_line)
-    root_path = File.expand_path(__FILE__).split("/")[0..-3]
-    full_path = (root_path + match_data[:file_path].split("/")).join("/")
-    { file_path: full_path, problem_line: match_data[:line_num].to_i }
+
+    { file_path: match_data[:file_path], problem_line: match_data[:line_num].to_i }
   end
 
   def surrounding_code(code, line_num)

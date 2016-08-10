@@ -10,12 +10,12 @@ class Flash
   end
 
   def [](key)
-    @now[key]
+    @now[key.to_s]
   end
 
   def []=(key, val)
-    @now[key] = val
-    @persisting_content[key] = val
+    @now[key.to_s] = val
+    @persisting_content[key.to_s] = val
   end
 
   def store_flash(res)
@@ -31,6 +31,6 @@ class Flash
   def initialize_now(req)
     @now = {}
     req_cookie = req.cookies['_rails_lite_app_flash']
-    JSON.parse(req_cookie).each { |k, v| @now[k.to_sym] = v } if req_cookie
+    JSON.parse(req_cookie).each { |k, v| @now[k.to_s] = v } if req_cookie
   end
 end

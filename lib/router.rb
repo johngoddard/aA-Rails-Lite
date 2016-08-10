@@ -75,4 +75,5 @@ class Router
       res.write("The resource you requested could not be found")
     end
   end
+
 end

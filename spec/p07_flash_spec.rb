@@ -42,6 +42,7 @@ describe Flash do
       cookie = { '_rails_lite_app_flash' => { "best_pizza" => "Arizmendi" }.to_json }
       req.cookies.merge!(cookie)
       updated_flash = Flash.new(req)
+      # debugger
       expect(updated_flash["best_pizza"]).to eq("Arizmendi")
     end
 
