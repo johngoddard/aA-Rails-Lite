@@ -52,7 +52,6 @@ class ControllerBase
   # use ERB and binding to evaluate templates
   # pass the rendered html to render_content
   def render(template_name)
-    debugger if self.class.name.to_s == "Cats2Controller"
     controller_name = self.class.name.underscore
     path = "views/#{controller_name}/#{template_name}.html.erb"
     binded_template = create_binded_template(path)

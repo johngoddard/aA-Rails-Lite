@@ -1,0 +1,26 @@
+<h2>Uh, oh you hit an error!</h2>
+
+
+<h4>Error information</h4>
+<ul>
+  <li>Exception Message:
+    <%= @error.message %>
+    <br>
+    <br>
+  </li>
+
+  <li>Backtrace:<br>
+    <% @error.backtrace.each do |line| %>
+      <%= "#{line}" %> <br>
+    <% end %>
+    <br>
+    <br>
+  </li>
+
+  <li>Source code preview:<br>
+    <% @code_preview.each do |line| %>
+      <%= "#{line}" %> <br>
+    <% end %>
+  </li>
+
+</ul>
