@@ -18,8 +18,16 @@
   </li>
 
   <li>Source code preview:<br>
-    <% @code_preview.each do |line| %>
-      <%= "#{line}" %> <br>
+    <% curr_line = @code_preview[:first_line]  %>
+    <% error_line = @code_preview[:problem_line]  %>
+
+    <% @code_preview[:code].each do |line| %>
+      <% if curr_line == error_line - 1%>
+        <%= "* #{curr_line}: #{line} <=== <strong>Error Line</strong>".html_safe %> <br>
+      <% else %>
+        <%= "* #{curr_line}: #{line}" %> <br>
+      <% end %>
+      <% curr_line += 1 %>
     <% end %>
   </li>
 

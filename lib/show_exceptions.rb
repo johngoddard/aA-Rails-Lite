@@ -33,19 +33,41 @@ class ShowExceptions
   end
 
   def preview_code(e)
+    code_file_info = find_file(e)
+    code = File.new(code_file_info[:file_path]).readlines
+
+    prev_options = surrounding_code(code, code_file_info[:problem_line])
+
+    @code_preview = {
+      code: code[prev_options[:first_line]..prev_options[:end_line]],
+      problem_line: prev_options[:problem_line],
+      first_line:  prev_options[:first_line]
+    }
+  end
+
+  def find_file(e)
     top_line = e.backtrace.first
     match_data = /(?<file_path>(.+\/)+.+\.rb):(?<line_num>\d+)/.match(top_line)
+    root_path = File.expand_path(__FILE__).split("/")[0..-3]
+    full_path = (root_path + match_data[:file_path].split("/")).join("/")
+    { file_path: full_path, problem_line: match_data[:line_num].to_i }
+  end
 
-    full_path = File.expand_path(__FILE__).split("/")[0..-3]
-    full_path += match_data[:file_path].split("/")
-    full_path = full_path.join("/")
+  def surrounding_code(code, line_num)
+    preview_options = { problem_line: line_num }
 
-    code = File.new(full_path).readlines
+    if line_num - CODE_PREVIEW_SIZE >= 0
+      preview_options[:first_line] = line_num - CODE_PREVIEW_SIZE
+    else
+      preview_options[:first_line] = 0
+    end
 
-    problem_line = match_data[:line_num].to_i
-    first_line = problem_line - CODE_PREVIEW_SIZE >= 0 ? problem_line - CODE_PREVIEW_SIZE : 0
-    last_line = problem_line + CODE_PREVIEW_SIZE > code.size  ? code.size - 1 : problem_line + CODE_PREVIEW_SIZE
+    if line_num + CODE_PREVIEW_SIZE > code.size
+      preview_options[:end_line] = code.size - 1
+    else
+      preview_options[:end_line] = line_num + CODE_PREVIEW_SIZE
+    end
 
-    @code_preview = code[first_line..last_line]
+    preview_options
   end
 end
