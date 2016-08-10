@@ -81,11 +81,7 @@ class ControllerBase
   end
 
   def form_authenticity_token
-    cookie = {}
-    cookie[:value] = @params["authenticity_token"]
-    cookie[:path] = '/'
-    @res.set_cookie('authenticity_token', cookie)
-    
+    create_auth_cookie
     @params["authenticity_token"]
   end
 
@@ -110,5 +106,12 @@ class ControllerBase
   def create_binded_template(path)
     template = ERB.new(File.read(path))
     template.result(binding)
+  end
+
+  def create_auth_cookie
+    cookie = {}
+    cookie[:value] = @params["authenticity_token"]
+    cookie[:path] = '/'
+    @res.set_cookie('authenticity_token', cookie)
   end
 end
